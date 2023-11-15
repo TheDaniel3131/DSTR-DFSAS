@@ -45,29 +45,46 @@ bool readCSV(const string& filename, vector<std::string>& header, vector<vector<
     return true;
 }
 
+// Helper function to convert a string to uppercase
+string toUpperCase(const string &str)
+{
+    string upperStr = str;
+    transform(upperStr.begin(), upperStr.end(), upperStr.begin(), ::toupper);
+    return upperStr;
+}
+
 // Function to view total dengue cases for a specific year and state
-void viewTotalDengueCases(const map<int, DengueData>& annualData, int year, const string& state) {
+void viewTotalDengueCases(const map<int, DengueData> &annualData, int year, string state)
+{
+    // Convert the state to uppercase for case-insensitive comparison
+    string upperState = toUpperCase(state);
+
     auto it = annualData.find(year);
-    if (it != annualData.end()) {
-        const DengueData& data = it->second;
-        auto stateIt = data.stateData.find(state);
-        if (stateIt != data.stateData.end()) {
-            const vector<int>& cases = stateIt->second;
+    if (it != annualData.end())
+    {
+        const DengueData &data = it->second;
+        // Convert state keys to uppercase before searching (this assumes the map keys are already in uppercase)
+        auto stateIt = data.stateData.find(upperState);
+        if (stateIt != data.stateData.end())
+        {
+            const vector<int> &cases = stateIt->second;
             int totalCases = 0;
-            for (int casesInWeek : cases) {
+            for (int casesInWeek : cases)
+            {
                 totalCases += casesInWeek;
             }
-            cout << "Year: " << year << ", State: " << state << ", Total Cases: " << totalCases << endl;
+            cout << "Year: " << year << ", State: " << upperState << ", Total Cases: " << totalCases << endl;
         }
-        else {
+        else
+        {
             cout << "State not found for the given year." << endl;
         }
     }
-    else {
+    else
+    {
         cout << "Year not found in the data." << endl;
     }
 }
-
 
 // Function to parse and store weekly dengue data
 void parseWeeklyDengueData(const std::vector<std::vector<std::string>>& weeklyDengueData, std::map<int, DengueData>& annualData, std::vector<std::string>& header) {
